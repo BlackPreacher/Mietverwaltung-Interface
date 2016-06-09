@@ -1,0 +1,118 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="layout.Mieteingabe"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="5dp">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="409dp"
+        android:id="@+id/scrollView"
+        android:scrollIndicators="right">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Eingabe der Mietdaten"
+                android:id="@+id/header_text"
+                android:layout_gravity="left|top" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/name_edit"
+                android:layout_marginTop="44dp"
+                android:layout_alignParentStart="true"
+                android:hint="Bitte Name eingeben"
+                android:layout_below="@+id/header_text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Betrag"
+                android:id="@+id/Betrag_view"
+                android:layout_marginTop="17dp"
+                android:layout_below="@+id/name_edit"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:id="@+id/Name_view"
+                android:layout_below="@+id/header_text"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="19dp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/betrag_edit"
+                android:layout_below="@+id/Betrag_view"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="24dp"
+                android:hint="Bitte Betrag eingeben" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Anlass"
+                android:id="@+id/Anlass_view"
+                android:layout_below="@+id/betrag_edit"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="17dp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/anlass_edit"
+                android:layout_marginTop="24dp"
+                android:hint="Bitte Anlass eingeben"
+                android:layout_below="@+id/Anlass_view"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Typ"
+                android:id="@+id/Typ_view"
+                android:layout_below="@+id/anlass_edit"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="17dp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/typ_edit"
+                android:layout_gravity="left|bottom"
+                android:layout_below="@+id/Typ_view"
+                android:layout_alignParentStart="true" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Eintragen"
+                android:id="@+id/eintragen_button"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentStart="true"
+                android:layout_alignWithParentIfMissing="false"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentTop="false"
+                android:layout_below="@+id/typ_edit"
+                android:layout_marginTop="20dp" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+</FrameLayout>

@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "282883147543",
+    "firebase_url": "https://mietverwaltung-interface.firebaseio.com",
+    "project_id": "mietverwaltung-interface",
+    "storage_bucket": "mietverwaltung-interface.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282883147543:android:5022435120d170cf",
+        "android_client_info": {
+          "package_name": "org.pi.mietverwaltung.mietverwaltung_interface"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "282883147543-5n9tj9qq1aiqoh2e9vh7vd80mpngnmfs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.pi.mietverwaltung.mietverwaltung_interface",
+            "certificate_hash": "722B6C10BDA8C16E0DF9D3BBD6BF5CF07052DBAC"
+          }
+        },
+        {
+          "client_id": "282883147543-orpitj8th3lhthgp0vjscqngim6r8u6a.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "282883147543-lcoltp33rb144av10e5fot9c8i5uqpu4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJcSvxzDdKpOSTHzuqZ_99fuk_3a3mHOI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
