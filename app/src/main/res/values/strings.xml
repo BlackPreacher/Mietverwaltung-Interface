@@ -12,7 +12,7 @@
         sending the fetched token to the server or subscribing to the PubSub topic. Please try
         running the sample again.</string>
 
-    <string name="linkprefix">http://[2a02:908:dc41:200:b1b7:6ec9:7164:e96e]/mietverwaltung/</string>
+    <string name="linkprefix">http://[Your-ipv6-address-goes-here]/mietverwaltung/</string>
     <string name="url_pref">link</string>
     <string name="loading">Loading</string>
 </resources>

@@ -21,8 +21,9 @@
         <item name="background">@color/background_light</item>
         <item name="android:divider">@color/light_gray</item>
         <item name="android:dividerHeight">1dp</item>
-        <item name="android:listSelector">@color/actionbar_background_green</item>
+        <item name="android:listSelector">@drawable/custom_selector</item>
         <item name="android:drawSelectorOnTop">false</item>
         <item name="android:cacheColorHint">#00000000</item>
+        <item name="android:animation">@android:anim/accelerate_interpolator</item>
     </style>
 </resources>
