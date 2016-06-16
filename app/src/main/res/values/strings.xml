@@ -12,6 +12,7 @@
         sending the fetched token to the server or subscribing to the PubSub topic. Please try
         running the sample again.</string>
 
+<<<<<<< HEAD
     <string name="linkprefix">http://[Your-ipv6-address-goes-here]/mietverwaltung/</string>
 =======
     <string name="linkprefix">http://[Your-IPV6-Adress-goes-here]/mietverwaltung/</string>
