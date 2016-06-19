@@ -125,4 +125,8 @@ public class Verwaltung extends Application {
     public void setLogged_in(Boolean logged_in) {
         this.logged_in = logged_in;
     }
+
+    public boolean get_server_avialble(){
+        return konto.isServer_available();
+    }
 }

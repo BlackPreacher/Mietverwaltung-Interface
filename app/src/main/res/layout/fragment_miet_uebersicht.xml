@@ -84,6 +84,16 @@
                 android:id="@+id/diff_value_view"
                 android:layout_alignBottom="@+id/diff_titel_view"
                 android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text=""
+                android:visibility="gone"
+                android:id="@+id/uebersicht_err_view"
+                android:layout_below="@+id/header_view"
+                android:layout_alignParentStart="true" />
         </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

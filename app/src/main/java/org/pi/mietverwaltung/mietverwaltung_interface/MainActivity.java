@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -59,6 +60,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -193,15 +196,18 @@ public class MainActivity extends AppCompatActivity implements
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOffscreenPageLimit(3);
-
+        if(mViewPager!=null) {
+            mViewPager.setAdapter(mSectionsPagerAdapter);
+            mViewPager.setOffscreenPageLimit(3);
+        }
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-
+        if(tabLayout != null) {
+            tabLayout.setupWithViewPager(mViewPager);
+        }
 
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -271,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements
         HashMap<String,String> tmp = new HashMap<>();
         tmp.put("url",linkip+"generate_miet_report.php");
         mProgressDialog.show();
-        new NetworkOperations().execute(tmp);
+        new NetworkOperations().execute(tmp)
         mProgressDialog.hide();
     }
 
@@ -319,11 +325,6 @@ public class MainActivity extends AppCompatActivity implements
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
-            } else {
-                // Google Sign In failed, update UI appropriately
-                // [START_EXCLUDE]
-                //updateUI(null);
-                // [END_EXCLUDE]
             }
         }
     }
@@ -552,32 +553,18 @@ public class MainActivity extends AppCompatActivity implements
 
                 TextView StatusTextView = (TextView) rootView.findViewById(R.id.status_view);
 
-                if(token_retrieved == true){
-                    StatusTextView.setText("Token OK");
+                if(token_retrieved){
+                    StatusTextView.setText(getString(R.string.token_ok));
                 } else {
-                    StatusTextView.setText("Token Error");
+                    StatusTextView.setText(getString(R.string.token_error));
                     Toast toast = Toast.makeText(getContext(),getString(R.string.token_error_message),Toast.LENGTH_LONG);
                     toast.show();
                 }
 
                 ListView list = (ListView)rootView.findViewById(R.id.gesamt_list);
-                //list.setVisibility(View.INVISIBLE);
-
-                ProgressDialog progressDialog = new ProgressDialog(this.getContext());
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog.setMax(100);
-                progressDialog.setIndeterminate(true);
-                progressDialog.incrementProgressBy(10);
-
-                ProgressDialog progressDialog1 = new ProgressDialog(getContext());
-                progressDialog1.setMessage("loading....");
-                progressDialog1.show();
-
                 mProgressDialog.show();
                 String result = get_aktueller_monat(rootView);
                 mProgressDialog.hide();
-
-                progressDialog1.dismiss();
 
                 final SwipeRefreshLayout swipeRefreshLayout;
                 swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
@@ -734,120 +721,131 @@ public class MainActivity extends AppCompatActivity implements
 
         public String get_aktueller_monat(final View view){
 
+            String end_result;
+
             Verwaltung verwalter = (Verwaltung)getActivity().getApplicationContext();
             verwalter.load();
 
-            final ListView list = (ListView)view.findViewById(R.id.gesamt_list);
+            if(verwalter.get_server_avialble()) {
+                TextView txt_view_error = (TextView)view.findViewById(R.id.akt_monat_err_view);
+                txt_view_error.setVisibility(View.GONE);
 
-            int menge_eingaben = verwalter.getEingabenFromKonto().size();
-            int menge_ausgaben = verwalter.getAusgabenFromKonto().size();
+                final ListView list = (ListView) view.findViewById(R.id.gesamt_list);
+                list.setVisibility(View.VISIBLE);
 
-            ArrayList<Eingang> alle_eingaben= verwalter.getEingabenFromKonto();
-            ArrayList<Rechnung> alle_rechungen = verwalter.getAusgabenFromKonto();
+                int menge_eingaben = verwalter.getEingabenFromKonto().size();
+                int menge_ausgaben = verwalter.getAusgabenFromKonto().size();
 
-            Log.i("Getmonate","eingaben" + menge_eingaben);
-            Log.i("getmonate","ausgaben" + menge_ausgaben);
+                ArrayList<Eingang> alle_eingaben = verwalter.getEingabenFromKonto();
+                ArrayList<Rechnung> alle_rechungen = verwalter.getAusgabenFromKonto();
 
-            ArrayList<Buchung> alle_Buchungen = new ArrayList<>();
+                Log.i("Getmonate", "eingaben" + menge_eingaben);
+                Log.i("getmonate", "ausgaben" + menge_ausgaben);
 
-
-            for(int i = 0 ; i < menge_eingaben; i++)
-            {
-                String value = "";
-                Eingang aktuelle_auswahl = alle_eingaben.get(i);
-                alle_Buchungen.add(new Buchung(aktuelle_auswahl));
-            }
-
-            for(int i = 0 ; i < menge_ausgaben; i++)
-            {
-                String value = "";
-                Rechnung aktuelle_auswahl = alle_rechungen.get(i);
-                alle_Buchungen.add(new Buchung(aktuelle_auswahl));
-            }
-
-            myArrayAdapter<Buchung> arrayAdapter = new myArrayAdapter<Buchung>(
-                    getContext(),
-                    R.layout.listitem,
-                    alle_Buchungen
-            );
-
-            list.setAdapter(arrayAdapter);
-
-            list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, final View view, int position, final long id) {
-                    final int pos = position;
-
-                    final Object o = list.getItemAtPosition(position);
+                ArrayList<Buchung> alle_Buchungen = new ArrayList<>();
 
 
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-                    alertDialogBuilder.setTitle("Löschen");
-                    alertDialogBuilder.setMessage("Möchtest du diesen eintrag wirklich löschen?").setCancelable(false).setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                for (int i = 0; i < menge_eingaben; i++) {
+                    String value = "";
+                    Eingang aktuelle_auswahl = alle_eingaben.get(i);
+                    alle_Buchungen.add(new Buchung(aktuelle_auswahl));
+                }
 
-                            int id_to_delete;
-                            char typ_of_item;
-                            if(o instanceof Buchung){
-                                Buchung buchung = (Buchung) o;
-                                id_to_delete = buchung.getId();
-                                typ_of_item = buchung.getTyp();
-                            } else {
-                                id_to_delete = 0;
-                                typ_of_item = 'u';
+                for (int i = 0; i < menge_ausgaben; i++) {
+                    String value = "";
+                    Rechnung aktuelle_auswahl = alle_rechungen.get(i);
+                    alle_Buchungen.add(new Buchung(aktuelle_auswahl));
+                }
+
+                myArrayAdapter<Buchung> arrayAdapter = new myArrayAdapter<Buchung>(
+                        getContext(),
+                        R.layout.listitem,
+                        alle_Buchungen
+                );
+
+                list.setAdapter(arrayAdapter);
+
+                list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, final View view, int position, final long id) {
+
+                        final Object o = list.getItemAtPosition(position);
+
+
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                        alertDialogBuilder.setTitle("Löschen");
+                        alertDialogBuilder.setMessage("Möchtest du diesen eintrag wirklich löschen?").setCancelable(false).setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                int id_to_delete;
+                                char typ_of_item;
+                                if (o instanceof Buchung) {
+                                    Buchung buchung = (Buchung) o;
+                                    id_to_delete = buchung.getId();
+                                    typ_of_item = buchung.getTyp();
+                                } else {
+                                    id_to_delete = 0;
+                                    typ_of_item = 'u';
+                                }
+                                deleteById(id_to_delete, typ_of_item);
+
+                                Toast toast = Toast.makeText(getContext(), "Choosen " + id_to_delete + " from " + typ_of_item, Toast.LENGTH_SHORT);
+                                toast.show();
                             }
-                            deleteById(id_to_delete,typ_of_item);
+                        }).setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
 
-                            Toast toast = Toast.makeText(getContext(),"Choosen " + id_to_delete + " from " + typ_of_item,Toast.LENGTH_SHORT);
-                            toast.show();
-                        }
-                    }).setNegativeButton("Nein", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            return;
-                        }
-                    });
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
 
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
+                        return true;
+                    }
+                });
 
-                    return true;
-                }
-            });
+                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        final Object o = list.getItemAtPosition(position);
 
-                    final Object o = list.getItemAtPosition(position);
+                        Buchung buchung = (Buchung) o;
 
-                    Buchung buchung = (Buchung) o;
+                        String name = buchung.getName();
+                        String betrag = Integer.toString(buchung.getBetrag());
+                        String anlass = buchung.getAnlass();
+                        String typ = Character.toString(buchung.getTyp());
+                        String datum = buchung.getDatum();
+                        String buchungs_id = Integer.toString(buchung.getId());
 
-                    String name = buchung.getName();
-                    String betrag = Integer.toString(buchung.getBetrag());
-                    String anlass = buchung.getAnlass();
-                    String typ = Character.toString(buchung.getTyp());
-                    String datum = buchung.getDatum();
-                    String buchungs_id = Integer.toString(buchung.getId());
+                        Intent intent = new Intent(getContext(), booking_details.class);
+                        intent.putExtra("name", name);
+                        intent.putExtra("betrag", betrag);
+                        intent.putExtra("anlass", anlass);
+                        intent.putExtra("typ", typ);
+                        intent.putExtra("datum", datum);
+                        intent.putExtra("id", buchungs_id);
 
-                    Intent intent = new Intent(getContext(),booking_details.class);
-                    intent.putExtra("name",name);
-                    intent.putExtra("betrag",betrag);
-                    intent.putExtra("anlass",anlass);
-                    intent.putExtra("typ",typ);
-                    intent.putExtra("datum",datum);
-                    intent.putExtra("id",buchungs_id);
-
-                    startActivity(intent);
+                        startActivity(intent);
 
 
-                    //return true;
+                        //return true;
 
-                }
-            });
+                    }
+                });
 
-            String end_result = "Ok";
+                 end_result = "Ok";
+            } else {
+                end_result = "Error";
+                TextView txt_view_error = (TextView)view.findViewById(R.id.akt_monat_err_view);
+                txt_view_error.setText(getString(R.string.server_not_available));
+                txt_view_error.setVisibility(View.VISIBLE);
+                ListView list = (ListView) view.findViewById(R.id.gesamt_list);
+                list.setVisibility(View.GONE);
+            }
 
             return end_result;
 
@@ -864,17 +862,29 @@ public class MainActivity extends AppCompatActivity implements
 
             Verwaltung verwalter =(Verwaltung)getActivity().getApplicationContext();
             verwalter.refresh_uebersicht();
-            int gesamt_einnahmen = verwalter.get_Jahres_einnahmen();
-            int gesamt_ausgaben = verwalter.get_Jahres_ausgaben();
-            int gesamt_bilanz = verwalter.get_Jahres_bilanz();
+            if(verwalter.get_server_avialble()) {
 
-            TextView tv_einnahmen = (TextView)v.findViewById(R.id.einnahmen_value_view);
-            TextView tv_ausgaben = (TextView)v.findViewById(R.id.ausgaben_value_view);
-            TextView tv_bilanz = (TextView)v.findViewById(R.id.diff_value_view);
+                TextView txt_view_error = (TextView)v.findViewById(R.id.uebersicht_err_view);
+                txt_view_error.setVisibility(View.GONE);
 
-            tv_einnahmen.setText(Integer.toString(gesamt_einnahmen));
-            tv_ausgaben.setText(Integer.toString(gesamt_ausgaben));
-            tv_bilanz.setText(Integer.toString(gesamt_bilanz));
+                int gesamt_einnahmen = verwalter.get_Jahres_einnahmen();
+                int gesamt_ausgaben = verwalter.get_Jahres_ausgaben();
+                int gesamt_bilanz = verwalter.get_Jahres_bilanz();
+
+                TextView tv_einnahmen = (TextView) v.findViewById(R.id.einnahmen_value_view);
+                TextView tv_ausgaben = (TextView) v.findViewById(R.id.ausgaben_value_view);
+                TextView tv_bilanz = (TextView) v.findViewById(R.id.diff_value_view);
+
+                tv_einnahmen.setText(Integer.toString(gesamt_einnahmen));
+                tv_ausgaben.setText(Integer.toString(gesamt_ausgaben));
+                tv_bilanz.setText(Integer.toString(gesamt_bilanz));
+
+            } else {
+                TextView txt_view_error = (TextView)v.findViewById(R.id.uebersicht_err_view);
+                txt_view_error.setText(getString(R.string.server_not_available));
+                txt_view_error.setVisibility(View.VISIBLE);
+            }
+
 
         }
     }

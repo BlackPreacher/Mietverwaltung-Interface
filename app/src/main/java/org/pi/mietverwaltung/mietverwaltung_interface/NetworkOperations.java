@@ -108,7 +108,6 @@ public class NetworkOperations extends AsyncTask<HashMap<String,String>,Void,Str
             return "error";
         }
 
-
     }
 
     private String openURLPost(String str_url, String lparams){

@@ -12,11 +12,12 @@
         sending the fetched token to the server or subscribing to the PubSub topic. Please try
         running the sample again.</string>
 
-<<<<<<< HEAD
-    <string name="linkprefix">http://[Your-ipv6-address-goes-here]/mietverwaltung/</string>
-=======
+
     <string name="linkprefix">http://[Your-IPV6-Adress-goes-here]/mietverwaltung/</string>
->>>>>>> origin/master
+
     <string name="url_pref">link</string>
     <string name="loading">Loading</string>
+    <string name="server_not_available">Der Server ist zur Zeit leider nicht erreichbar</string>
+    <string name="token_error">Token Error</string>
+    <string name="token_ok">Token Ok</string>
 </resources>

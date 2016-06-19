@@ -20,6 +20,16 @@ public class Konto {
 
     String linkip = "";
 
+    public boolean isServer_available() {
+        return server_available;
+    }
+
+    public void setServer_available(boolean server_available) {
+        this.server_available = server_available;
+    }
+
+    boolean server_available = false;
+
     public Konto(){
 
         eingaben = new ArrayList<>();
@@ -54,29 +64,33 @@ public class Konto {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+        if(result != "error") {
+            server_available = true;
+            final JSONArray jArray_ein;
+            try {
+                jArray_ein = new JSONArray(result);
 
-        final JSONArray jArray_ein;
-        try {
-            jArray_ein = new JSONArray(result);
+                Log.i("json decode eingaben", result);
 
-            Log.i("json decode eingaben",result);
+                eingaben.clear();
+                Log.i("Konte", "empty einnahmen");
 
-            eingaben.clear();
-            Log.i("Konte","empty einnahmen");
+                final int laenge_ein = jArray_ein.length();
 
-            final int laenge_ein = jArray_ein.length();
+                for (int i = 0; i < laenge_ein; i++) {
+                    JSONObject data;
+                    data = jArray_ein.getJSONObject(i);
+                    Eingang tmp = new Eingang(Integer.parseInt(data.getString("id")), data.getString("name"), Integer.parseInt(data.getString("Betrag")), data.getString("datum_verw"));
+                    tmp.setAnlass(data.getString("Anlass"));
+                    tmp.setDatum(data.getString("datum_verw"));
+                    eingaben.add(tmp);
+                }
 
-            for(int i = 0; i < laenge_ein; i++){
-                JSONObject data;
-                data = jArray_ein.getJSONObject(i);
-                Eingang tmp = new Eingang(Integer.parseInt(data.getString("id")),data.getString("name"),Integer.parseInt(data.getString("Betrag")),data.getString("datum_verw"));
-                tmp.setAnlass(data.getString("Anlass"));
-                tmp.setDatum(data.getString("datum_verw"));
-                eingaben.add(tmp);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } else {
+            server_available = false;
         }
 
     }
