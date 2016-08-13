@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements
         HashMap<String,String> tmp = new HashMap<>();
         tmp.put("url",linkip+"generate_miet_report.php");
         mProgressDialog.show();
-        new NetworkOperations().execute(tmp)
+        new NetworkOperations().execute(tmp);
         mProgressDialog.hide();
     }
 
