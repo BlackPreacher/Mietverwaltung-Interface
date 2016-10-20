@@ -592,6 +592,7 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onRefresh() {
                         mProgressDialog.show();
+                        swipeRefreshLayout.setRefreshing(true);
                         set_uebersicht(rootView);
                         swipeRefreshLayout.setRefreshing(false);
                         mProgressDialog.hide();
